@@ -1,0 +1,31 @@
+{
+  "name": "ts_aula_03",
+  "version": "1.0.0",
+  "description": "aula 03 de teste de softwares",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest --watchAll"
+  },
+  "keywords": [],
+  "author": "Carol Feltz",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2",
+    "jest": "^30.3.0",
+    "nodemon": "^3.1.14",
+    "supertest": "^7.2.2"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnnyFeltz/TS_aula_03.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AnnyFeltz/TS_aula_03/issues"
+  },
+  "homepage": "https://github.com/AnnyFeltz/TS_aula_03#readme"
+}
