@@ -1,4 +1,5 @@
 const { criarLivro } = require('../services/livroService');
+const { buscarLivroId } = require('../services/livroService');
 
 const criar = async (req, res) => {
     const { titulo, autor} = req.body;
@@ -7,7 +8,16 @@ const criar = async (req, res) => {
         .json({ error: 'Título e autor são obrigatórios' });
 
     const livro = await criarLivro(titulo, autor);
-    res.status(201).json(livro);
+    return res.status(201).json(livro);
 }
 
-module.exports = { criar };
+const buscarId = async (req, res) => {
+    const { id } = req.params;
+
+    const livro = await buscarLivroId(id);
+    if (!livro) return res.status(404).json({ error: 'Livro não encontrado' });
+
+    return res.status(200).json(livro);
+}
+
+module.exports = { criar, buscarId };

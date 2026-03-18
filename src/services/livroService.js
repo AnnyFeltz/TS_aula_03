@@ -9,4 +9,13 @@ const criarLivro = async (titulo, autor) => {
     };
 }
 
-module.exports = { criarLivro};
+const buscarLivroId = async (id) => {
+    const livro = await Livro.findByPk(id);
+    return livro ? {
+        id: livro.id,
+        titulo: livro.titulo,
+        autor: livro.autor,
+    } : null;
+}
+
+module.exports = { criarLivro, buscarLivroId};
