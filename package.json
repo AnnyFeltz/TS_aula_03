@@ -6,15 +6,23 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "db:migrate": "sequelize-cli db:migrate",
+    "db:migrate:undo": "sequelize-cli db:migrate:undo"
   },
   "keywords": [],
   "author": "Carol Feltz",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.21.2",
+    "better-sqlite3": "^12.8.0",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
     "jest": "^30.3.0",
+    "mysql2": "^3.20.0",
     "nodemon": "^3.1.14",
+    "sequelize": "^6.37.8",
+    "sequelize-cli": "^6.6.5",
+    "sqlite3": "^6.0.1",
     "supertest": "^7.2.2"
   },
   "directories": {
