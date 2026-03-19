@@ -1,4 +1,4 @@
-const { criarLivro ,buscarLivroId,atualizarLivro} = require('../services/livroService');
+const { criarLivro,buscarLivroId,atualizarLivro,deletarLivro} = require('../services/livroService');
 
 const criar = async (req, res) => {
     try {
@@ -30,9 +30,9 @@ const buscarId = async (req, res) => {
 const atualizar = async (req, res) => {
     try {
         const { id } = req.params;
-
         const { titulo, autor } = req.body;
-        const livroAtualizado = await atualizarLivro(id, titulo, autor);
+
+        const livro = await atualizarLivro(id, titulo, autor);
         if (!titulo && !autor) return res.status(400).json({ error: 'Pelo menos um campo (título ou autor) deve ser fornecido para atualização' });
 
         return res.status(200).json({ id, titulo, autor });
@@ -41,5 +41,16 @@ const atualizar = async (req, res) => {
     }
 }
 
+const deletar = async (req, res) => {
+    try {
+        const { id } = req.params;         
+        const livro = await deletarLivro(id);
+        if (!livro) return res.status(404).json({ error: 'Livro não encontrado' });
+        
+    } catch (error) {
+        return res.status(500).json({ error: 'Ocorreu um erro ao deletar o livro' });
+    }
 
-module.exports = { criar, buscarId, atualizar, };
+}
+
+module.exports = { criar, buscarId, atualizar, deletar};

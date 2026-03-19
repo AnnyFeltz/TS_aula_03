@@ -23,3 +23,9 @@ test('PATCH /livros/atualizar/:id', async () => {
     expect(response.status).toBe(200);
     expect(response.body.titulo).toBe('Novo Nome');
 });
+
+test('DELETE /livros/deletar/:id', async () => {
+    const response = await request(api)
+        .delete('/livros/deletar/5');
+    expect(response.status).toBe(204);
+});

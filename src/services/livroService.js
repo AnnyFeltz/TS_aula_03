@@ -33,4 +33,13 @@ const atualizarLivro = async (id, titulo, autor) => {
     }   
 }
 
+const deletarLivro = async (id) => {
+    const livro = await Livro.findByPk(id);
+    if (livro) {
+        await livro.destroy();
+        return true;
+    }
+    return false;
+};
+
 module.exports = { criarLivro, buscarLivroId, atualizarLivro };
