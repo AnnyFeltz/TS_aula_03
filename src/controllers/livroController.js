@@ -27,6 +27,7 @@ const buscarId = async (req, res) => {
     }
 }
 
+<<<<<<< HEAD
 const atualizar = async (req, res) => {
     try {
         const { id } = req.params;
@@ -41,3 +42,6 @@ const atualizar = async (req, res) => {
 
 
 module.exports = { criar, buscarId, atualizar, };
+=======
+module.exports = { criar, buscarId };
+>>>>>>> 3430c52f9fd3489737cd4c6d2c5850a004b5dd6e
