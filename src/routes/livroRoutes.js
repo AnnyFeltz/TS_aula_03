@@ -1,8 +1,13 @@
 const { Router } = require('express');
 const { criar } = require('../controllers/livroController');
+const { buscarId } = require('../controllers/livroController');
 
 const router = Router();
 
-router.post('/', criar);
+router.post('/criar', criar); //Anny
+router.get('/:id', buscarId); //Anny
+router.patch('/atualizar/:id', atualizar); //Yasmim
+//router.delete('/deletar/:id', deletar); //Yasmim
+//roter.get('/', todos); //Anny
 
 module.exports = router;
