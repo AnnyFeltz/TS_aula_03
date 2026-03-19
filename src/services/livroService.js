@@ -20,14 +20,17 @@ const buscarLivroId = async (id) => {
 
 const atualizarLivro = async (id, titulo, autor) => {
     const livro = await Livro.findByPk(id);
-    if (!livro) return null;
-
-    await livro.update({ titulo, autor });
-    return {
-        id: livro.id,
-        titulo: livro.titulo,
-        autor: livro.autor,
-    };
+    if (!livro){
+        console.log(`Livro com id ${id} não encontrado.`);
+        return null;   
+    } else { 
+        await livro.update({ titulo, autor });
+        return {
+            id: livro.id,
+            titulo: livro.titulo,
+            autor: livro.autor,
+        };
+    }   
 }
 
 module.exports = { criarLivro, buscarLivroId, atualizarLivro };

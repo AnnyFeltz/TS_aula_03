@@ -1,5 +1,4 @@
-const { criarLivro } = require('../services/livroService');
-const { buscarLivroId } = require('../services/livroService');
+const { criarLivro ,buscarLivroId,atualizarLivro} = require('../services/livroService');
 
 const criar = async (req, res) => {
     try {
@@ -27,12 +26,15 @@ const buscarId = async (req, res) => {
     }
 }
 
-<<<<<<< HEAD
+
 const atualizar = async (req, res) => {
     try {
         const { id } = req.params;
+
         const { titulo, autor } = req.body;
+        const livroAtualizado = await atualizarLivro(id, titulo, autor);
         if (!titulo && !autor) return res.status(400).json({ error: 'Pelo menos um campo (título ou autor) deve ser fornecido para atualização' });
+
         return res.status(200).json({ id, titulo, autor });
     } catch (error) {
         return res.status(500).json({ error: 'Ocorreu um erro ao atualizar o livro' });
@@ -40,8 +42,4 @@ const atualizar = async (req, res) => {
 }
 
 
-
 module.exports = { criar, buscarId, atualizar, };
-=======
-module.exports = { criar, buscarId };
->>>>>>> 3430c52f9fd3489737cd4c6d2c5850a004b5dd6e
