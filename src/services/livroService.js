@@ -9,6 +9,15 @@ const criarLivro = async (titulo, autor) => {
     };
 }
 
+const listarLivros = async () => {
+    const livros = await Livro.findAll();
+    return livros ? livros.map(livro => ({
+        id: livro.id,
+        titulo: livro.titulo,
+        autor: livro.autor,
+    })) : [];
+}
+
 const buscarLivroId = async (id) => {
     const livro = await Livro.findByPk(id);
     return livro ? {
@@ -42,4 +51,4 @@ const deletarLivro = async (id) => {
     return false;
 };
 
-module.exports = { criarLivro, buscarLivroId, atualizarLivro };
+module.exports = { criarLivro, listarLivros, buscarLivroId, atualizarLivro, deletarLivro };

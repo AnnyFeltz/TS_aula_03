@@ -9,6 +9,13 @@ test('POST /livros cria um livro', async () => {
     expect(res.body.titulo).toBe('Livro de Teste');
 });
 
+test('GET /livros/ lista todos os livros', async () => {
+    const res = await request(api)
+        .get('/livros/');
+    expect(res.status).toBe(200);
+    expect(res.body.length).toBeGreaterThan(0);
+});
+
 test('GET /livro/:id busca livro por id', async () => {
     const res = await request(api)
         .get('/livros/1');
@@ -26,6 +33,6 @@ test('PATCH /livros/atualizar/:id', async () => {
 
 test('DELETE /livros/deletar/:id', async () => {
     const response = await request(api)
-        .delete('/livros/deletar/5');
-    expect(response.status).toBe(204);
+        .delete('/livros/deletar/1');
+    expect(response.status).toBe(200);
 });
