@@ -31,6 +31,7 @@ src/
 ├── app.js          # Configuração do servidor Express
 └── server.js       # Ponto de entrada (inicialização do servidor)
 tests/              # Arquivos de teste (.test.js)
+```
 
 # 🚀 Como Executar o Projeto
 
