@@ -2,11 +2,11 @@ const { criarLivro, listarLivros, buscarLivroId, atualizarLivro, deletarLivro} =
 
 const criar = async (req, res) => {
     try {
-        const { titulo, autor} = req.body;
+        const { titulo, autor, disponivel } = req.body;
 
         if(!titulo || !autor) return res.status(400).json({ error: 'Título e autor são obrigatórios' });
 
-        const livro = await criarLivro(titulo, autor);
+        const livro = await criarLivro(titulo, autor, disponivel);
         return res.status(201).json(livro);
     }catch (error) {
         return res.status(500).json({ error: 'Ocorreu um erro ao criar o livro' });
