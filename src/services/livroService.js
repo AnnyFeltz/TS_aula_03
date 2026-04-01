@@ -9,6 +9,7 @@ const criarLivro = async (titulo, autor) => {
     };
 }
 
+//mudar para ser só disponiveis
 const listarLivros = async () => {
     const livros = await Livro.findAll();
     return livros ? livros.map(livro => ({

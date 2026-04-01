@@ -9,6 +9,7 @@ test('POST /livros cria um livro', async () => {
     expect(res.body.titulo).toBe('Livro de Teste');
 });
 
+//mudar para ser só disponiveis
 test('GET /livros/ lista todos os livros', async () => {
     const res = await request(api)
         .get('/livros/');
