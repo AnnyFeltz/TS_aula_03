@@ -1,21 +1,22 @@
 const { Livro } = require('../models');
 
-const criarLivro = async (titulo, autor) => {
-    const livro = await Livro.create({ titulo, autor });
+const criarLivro = async (titulo, autor, disponivel) => {
+    const livro = await Livro.create({ titulo, autor, disponivel });
     return {
         id: livro.id,
         titulo: livro.titulo,
         autor: livro.autor,
+        disponivel: livro.disponivel,
     };
 }
 
-//mudar para ser só disponiveis
 const listarLivros = async () => {
-    const livros = await Livro.findAll();
+    const livros = await Livro.findAll({ where: { disponivel: true } });
     return livros ? livros.map(livro => ({
         id: livro.id,
         titulo: livro.titulo,
         autor: livro.autor,
+        disponivel: livro.disponivel,
     })) : [];
 }
 
@@ -25,6 +26,7 @@ const buscarLivroId = async (id) => {
         id: livro.id,
         titulo: livro.titulo,
         autor: livro.autor,
+        disponivel: livro.disponivel,
     } : null;
 }
 
