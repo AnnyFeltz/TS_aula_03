@@ -18,7 +18,7 @@ module.exports = {
         allowNull: false,
       },
       senha: {
-        type: Sequelize.STRING(255),
+        type: Sequelize.STRING(8),
         allowNull: true,
       },
       tipo: {
@@ -37,6 +37,6 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    await queryInterface.dropTable('livros');
+    await queryInterface.dropTable('usuarios');
   }
 };
