@@ -14,9 +14,9 @@ test('GET /livros/ lista todos os livros', async () => {
 });
 
 test('GET /livro/:id busca livro por id', async () => {
-    const res = await axios.get(`${api}/livros/1`, { headers: { 'Content-Type': 'application/json' } });
+    const res = await axios.get(`${api}/livros/7`, { headers: { 'Content-Type': 'application/json' } });
     expect(res.status).toBe(200);
-    expect(res.data.id).toBe(1);
+    expect(res.data.id).toBe(7);
 });
 
 test('PATCH /livros/atualizar/:id', async () => {
@@ -25,8 +25,7 @@ test('PATCH /livros/atualizar/:id', async () => {
     expect(response.data.titulo).toBe('Novo Nome');
 });
 
-// test('DELETE /livros/deletar/:id', async () => {
-//     const response = await axios(api)
-//         .delete('/livros/deletar/1');
-//     expect(response.status).toBe(200);
-// });
+test('DELETE /livros/deletar/:id', async () => {
+    const response = await axios.delete(`${api}/livros/deletar/10`, { headers: { 'Content-Type': 'application/json' } });
+    expect(response.status).toBe(200);
+});

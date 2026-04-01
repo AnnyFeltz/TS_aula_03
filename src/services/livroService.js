@@ -41,13 +41,14 @@ const atualizarLivro = async (id, titulo, autor) => {
             id: livro.id,
             titulo: livro.titulo,
             autor: livro.autor,
+            disponivel: livro.disponivel,
         };
     }   
 }
 
 const deletarLivro = async (id) => {
     const livro = await Livro.findByPk(id);
-    if (livro) {
+    if (livro && livro.disponivel) {
         await livro.destroy();
         return true;
     }
