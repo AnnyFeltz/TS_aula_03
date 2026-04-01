@@ -26,7 +26,7 @@ describe("Empréstimos", () => {
     });
 
     test("deve deletar um empréstimo", async () => {
-        // criar o teste
+        
     });
 
     test("deve retornar 404 ao deletar empréstimo inexistente", async () => {
