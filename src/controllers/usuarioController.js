@@ -2,11 +2,11 @@ const { criarUsuario, listarUsuarios, buscarUsuarioId, atualizarUsuario, deletar
 
 const criar = async (req, res) => {
     try {
-        const { nome, email} = req.body;
+        const { nome, email, senha, tipo} = req.body;
 
-        if(!nome || !email) return res.status(400).json({ error: 'Nome e email são obrigatórios' });
+        if(!nome || !email || !senha || !tipo) return res.status(400).json({ error: 'Todos os campos são obrigatórios' });
 
-        const usuario = await criarUsuario(nome, email);
+        const usuario = await criarUsuario(nome, email, senha, tipo);
         return res.status(201).json(usuario);
     }catch (error) {
         return res.status(500).json({ error: 'Ocorreu um erro ao criar o usuario' });
@@ -42,14 +42,14 @@ const buscarId = async (req, res) => {
 const atualizar = async (req, res) => {
     try {
         const { id } = req.params;
-        const { nome, email } = req.body;
+        const { nome, email, senha, tipo } = req.body;
 
-        const usuario = await atualizarUsuario(id, nome, email);
+        const usuario = await atualizarUsuario(id, nome, email, senha, tipo);
 
         if (!usuario) return res.status(404).json({ error: 'usuario não encontrado' });
-        if (!nome && !email) return res.status(400).json({ error: 'Pelo menos um campo (título ou email) deve ser fornecido para atualização' });
+        if (!nome && !email && !senha && !tipo) return res.status(400).json({ error: 'Pelo menos um campo (título, email, senha ou tipo) deve ser fornecido para atualização' });
 
-        return res.status(200).json({ id, nome, email });
+        return res.status(200).json({ id, nome, email, senha, tipo });
     } catch (error) {
         return res.status(500).json({ error: 'Ocorreu um erro ao atualizar o usuario' });
     }
