@@ -1,26 +1,25 @@
 const axios = require('axios');
 const api = `http://localhost:${process.env.PORT || 3000}`;
 
-const LIVRO_ID = 1;
+const LIVRO_ID = 6;
 const USUARIO_ID = 1;
 
 describe("Empréstimos", () => {
-    
+
     test("deve registrar um novo empréstimo", async () => {
         const res = await axios.post(
-            `${api}/emprestimos/criar`, 
+            `${api}/emprestimos/criar`,
             {
                 livro_id: LIVRO_ID,
                 usuario_id: USUARIO_ID,
                 data_devolucao_prevista: "2025-05-01",
-            }, 
-            {headers: { 'Content-Type': 'application/json' }}
+            }
         );
         expect(res.status).toBe(201);
         expect(res.data).toHaveProperty("id");
 
-        // Limpeza para não travar o livro nos próximos testes
-        await axios.delete(`${api}/emprestimos/${res.data.id}`);
+        // Limpeza
+        await axios.delete(`${api}/emprestimos/deletar/${res.data.id}`);
     });
 
     test("deve retornar uma lista de empréstimos", async () => {
@@ -30,51 +29,39 @@ describe("Empréstimos", () => {
     });
 
     test("deve deletar um empréstimo", async () => {
-        const temp = await axios.post(
-            `${api}/emprestimos`, 
-            {
-                livro_id: 2, 
-                usuario_id: 1, 
-                data_devolucao_prevista: "2025-05-01"
-            },
-            {headers: { 'Content-Type': 'application/json' }}
-        );
-        const res = await axios.delete(`${api}/emprestimos/${temp.data.id}`);
+        const temp = await axios.post(`${api}/emprestimos/criar`, {
+            livro_id: LIVRO_ID,
+            usuario_id: USUARIO_ID,
+            data_devolucao_prevista: "2025-05-01"
+        });
+        const res = await axios.delete(`${api}/emprestimos/deletar/${temp.data.id}`);
         expect(res.status).toBe(200);
     });
 
     test("deve retornar 404 ao deletar empréstimo inexistente", async () => {
         try {
-            await axios.delete(
-                `${api}/emprestimos/9999`, 
-                {headers: { 'Content-Type': 'application/json' }}
-            );
+            await axios.delete(`${api}/emprestimos/deletar/9999`);
         } catch (err) {
             expect(err.response.status).toBe(404);
         }
     });
 
     test("deve retornar um empréstimo pelo id", async () => {
-        const temp = await axios.post(
-            `${api}/emprestimos`, 
-            {
-                livro_id: 3, 
-                usuario_id: 1, 
-                data_devolucao_prevista: "2025-05-01"}
-            );
-        const res = await axios.get(
-            `${api}/emprestimos/${temp.data.id}`,
-            {headers: { 'Content-Type': 'application/json' }}
-        );
+        const temp = await axios.post(`${api}/emprestimos/criar`, {
+            livro_id: LIVRO_ID,
+            usuario_id: USUARIO_ID,
+            data_devolucao_prevista: "2025-05-01"
+        });
+        const res = await axios.get(`${api}/emprestimos/buscar/${temp.data.id}`);
         expect(res.status).toBe(200);
         expect(res.data.id).toBe(temp.data.id);
-        
-        await axios.delete(`${api}/emprestimos/${temp.data.id}`);
+
+        await axios.delete(`${api}/emprestimos/deletar/${temp.data.id}`);
     });
 
     test("deve retornar 404 para empréstimo inexistente", async () => {
         try {
-            await axios.get(`${api}/emprestimos/9999`);
+            await axios.get(`${api}/emprestimos/buscar/9999`);
         } catch (err) {
             expect(err.response.status).toBe(404);
         }
@@ -115,17 +102,18 @@ describe("Empréstimos", () => {
 
     test("deve registrar a devolução de um empréstimo", async () => {
         const temp = await axios.post(`${api}/emprestimos/criar`, {
-            livro_id: 4, usuario_id: 1, data_devolucao_prevista: "2025-05-01"
+            livro_id: LIVRO_ID,
+            usuario_id: USUARIO_ID,
+            data_devolucao_prevista: "2025-05-01"
         });
-        // Rota PUT /emprestimos/:id/devolver definida no Controller anterior
-        const res = await axios.put(`${api}/emprestimos/${temp.data.id}/devolver`);
+        const res = await axios.put(`${api}/emprestimos/devolver/${temp.data.id}`);
         expect(res.status).toBe(200);
         expect(res.data.status).toBe("DEVOLVIDO");
     });
 
     test("deve retornar 404 ao devolver empréstimo inexistente", async () => {
         try {
-            await axios.put(`${api}/emprestimos/9999/devolver`);
+            await axios.put(`${api}/emprestimos/devolver/9999`);
         } catch (err) {
             expect(err.response.status).toBe(404);
         }
@@ -138,18 +126,39 @@ describe("Empréstimos", () => {
     });
 
     test("deve retornar 400 ao emprestar livro já emprestado", async () => {
-        // Cria o primeiro
-        await axios.post(`${api}/emprestimos`, {
-            livro_id: 10, usuario_id: 1, data_devolucao_prevista: "2025-05-01"
+        const LIVRO_DUPLICADO = 10;
+
+        // Limpeza prévia
+        const lista = await axios.get(`${api}/emprestimos`);
+        const ativos = lista.data.filter(e => e.livro_id === LIVRO_DUPLICADO && e.status === 'ATIVO');
+        for (const ativo of ativos) {
+            await axios.delete(`${api}/emprestimos/deletar/${ativo.id}`);
+        }
+
+        // Primeiro empréstimo
+        await axios.post(`${api}/emprestimos/criar`, {
+            livro_id: LIVRO_DUPLICADO,
+            usuario_id: USUARIO_ID,
+            data_devolucao_prevista: "2025-05-01"
         });
 
         try {
-            // Tenta o segundo com o mesmo livro_id: 10
-            await axios.post(`${api}/emprestimos`, {
-                livro_id: 10, usuario_id: 2, data_devolucao_prevista: "2025-05-01"
+            // Segundo empréstimo (deve falhar)
+            await axios.post(`${api}/emprestimos/criar`, {
+                livro_id: LIVRO_DUPLICADO,
+                usuario_id: USUARIO_ID,
+                data_devolucao_prevista: "2025-05-01"
             });
         } catch (err) {
             expect(err.response.status).toBe(400);
+            // Verifica se a mensagem existe, independente da chave (message ou error)
+            const msg = err.response.data.message || err.response.data.error;
+            expect(msg).toMatch(/já possui um empréstimo ativo|já está emprestado/i);
+        } finally {
+            // Limpeza final para o livro 10
+            const final = await axios.get(`${api}/emprestimos`);
+            const criado = final.data.find(e => e.livro_id === LIVRO_DUPLICADO && e.status === 'ATIVO');
+            if (criado) await axios.delete(`${api}/emprestimos/deletar/${criado.id}`);
         }
     });
 });
