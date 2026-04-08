@@ -58,7 +58,7 @@ const atualizar = async (req, res) => {
 const deletar = async (req, res) => {
     try {
         const { id } = req.params;         
-        const usuario = await deletarusuario(id);
+        const usuario = await deletarUsuario(id);
 
         if (!usuario) return res.status(404).json({ error: 'usuario não encontrado' });
 
