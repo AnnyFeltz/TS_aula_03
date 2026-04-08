@@ -1,5 +1,5 @@
 const Emprestimo = require('../models/');
-const Livro = require('../models/Livro');
+const Emprestimo = require('../models/Emprestimo');
 
 class EmprestimoService {
   async criar(dados) {

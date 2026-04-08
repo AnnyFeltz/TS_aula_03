@@ -1,13 +1,13 @@
 const { Router } = require('express');
-const { criar, listar, atualizar, buscarId, deletar } = require('../controllers/emprestimoController');
+const EmprestimoController = require('../controllers/emprestimoController');
 
 const router = Router();
 
-router.post('/criar', criar); //Anny
-//mudar para ser só disponiveis
-router.get('/', listar); //Anny
-router.get('/:id', buscarId); //Anny
-router.patch('/atualizar/:id', atualizar); //Yasmim
-router.delete('/deletar/:id', deletar); //Yasmim
+router.post('/', EmprestimoController.criar); 
+router.get('/', EmprestimoController.listar);
+router.get('/:id', EmprestimoController.buscarPorId);
+router.put('/:id/devolver', EmprestimoController.devolver); 
+router.delete('/:id', EmprestimoController.excluir);
+router.get('/usuario/:usuario_id', EmprestimoController.listarPorUsuario);
 
 module.exports = router;
