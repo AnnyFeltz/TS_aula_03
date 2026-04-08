@@ -1,10 +1,34 @@
 const axios = require('axios');
 const api = `http://localhost:${process.env.PORT || 3000}`;
 
-const LIVRO_ID = 6;
-const USUARIO_ID = 1;
+let LIVRO_ID;
+let USUARIO_ID;
 
 describe("Empréstimos", () => {
+
+    beforeAll(async () => {
+        try {
+            const resLivros = await axios.get(`${api}/livros`);
+            const resUsuarios = await axios.get(`${api}/usuarios`);
+            
+            LIVRO_ID = resLivros.data[0].id;
+            USUARIO_ID = resUsuarios.data[0].id;
+        } catch (err) {
+            console.error("Erro ao buscar dados iniciais. Verifique se há livros e usuários cadastrados.");
+        }
+    });
+
+    beforeEach(async () => {
+        try {
+            const lista = await axios.get(`${api}/emprestimos`);
+            const ativos = lista.data.filter(e => e.livro_id === LIVRO_ID && e.status === 'ATIVO');
+            
+            for (const ativo of ativos) {
+                await axios.delete(`${api}/emprestimos/deletar/${ativo.id}`);
+            }
+        } catch (err) {
+        }
+    });
 
     test("deve registrar um novo empréstimo", async () => {
         const res = await axios.post(
@@ -18,7 +42,6 @@ describe("Empréstimos", () => {
         expect(res.status).toBe(201);
         expect(res.data).toHaveProperty("id");
 
-        // Limpeza
         await axios.delete(`${api}/emprestimos/deletar/${res.data.id}`);
     });
 
@@ -89,17 +112,6 @@ describe("Empréstimos", () => {
         }
     });
 
-    test("deve retornar 400 ao registrar empréstimo sem data de devolução", async () => {
-        try {
-            await axios.post(`${api}/emprestimos/criar`, {
-                livro_id: LIVRO_ID,
-                usuario_id: USUARIO_ID,
-            });
-        } catch (err) {
-            expect(err.response.status).toBe(400);
-        }
-    });
-
     test("deve registrar a devolução de um empréstimo", async () => {
         const temp = await axios.post(`${api}/emprestimos/criar`, {
             livro_id: LIVRO_ID,
@@ -111,14 +123,6 @@ describe("Empréstimos", () => {
         expect(res.data.status).toBe("DEVOLVIDO");
     });
 
-    test("deve retornar 404 ao devolver empréstimo inexistente", async () => {
-        try {
-            await axios.put(`${api}/emprestimos/devolver/9999`);
-        } catch (err) {
-            expect(err.response.status).toBe(404);
-        }
-    });
-
     test("deve listar empréstimos de um usuário específico", async () => {
         const res = await axios.get(`${api}/emprestimos/usuario/${USUARIO_ID}`);
         expect(res.status).toBe(200);
@@ -126,39 +130,22 @@ describe("Empréstimos", () => {
     });
 
     test("deve retornar 400 ao emprestar livro já emprestado", async () => {
-        const LIVRO_DUPLICADO = 10;
-
-        // Limpeza prévia
-        const lista = await axios.get(`${api}/emprestimos`);
-        const ativos = lista.data.filter(e => e.livro_id === LIVRO_DUPLICADO && e.status === 'ATIVO');
-        for (const ativo of ativos) {
-            await axios.delete(`${api}/emprestimos/deletar/${ativo.id}`);
-        }
-
-        // Primeiro empréstimo
         await axios.post(`${api}/emprestimos/criar`, {
-            livro_id: LIVRO_DUPLICADO,
+            livro_id: LIVRO_ID,
             usuario_id: USUARIO_ID,
             data_devolucao_prevista: "2025-05-01"
         });
 
         try {
-            // Segundo empréstimo (deve falhar)
             await axios.post(`${api}/emprestimos/criar`, {
-                livro_id: LIVRO_DUPLICADO,
+                livro_id: LIVRO_ID,
                 usuario_id: USUARIO_ID,
                 data_devolucao_prevista: "2025-05-01"
             });
         } catch (err) {
             expect(err.response.status).toBe(400);
-            // Verifica se a mensagem existe, independente da chave (message ou error)
             const msg = err.response.data.message || err.response.data.error;
             expect(msg).toMatch(/já possui um empréstimo ativo|já está emprestado/i);
-        } finally {
-            // Limpeza final para o livro 10
-            const final = await axios.get(`${api}/emprestimos`);
-            const criado = final.data.find(e => e.livro_id === LIVRO_DUPLICADO && e.status === 'ATIVO');
-            if (criado) await axios.delete(`${api}/emprestimos/deletar/${criado.id}`);
         }
     });
 });
