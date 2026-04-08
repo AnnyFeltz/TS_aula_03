@@ -10,6 +10,7 @@ const Emprestimo = sequelize.define('Emprestimo', {
     livro_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        
     },
     usuario_id: {
         type: DataTypes.INTEGER,
@@ -33,7 +34,7 @@ const Emprestimo = sequelize.define('Emprestimo', {
     },
     status: {
         type: DataTypes.STRING,
-        defaultValue: 'ATIVO', // Pode ser 'ATIVO' ou 'DEVOLVIDO'
+        defaultValue: 'ATIVO', 
     }
 }, {
     tableName: 'emprestimos',
