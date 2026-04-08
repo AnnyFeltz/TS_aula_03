@@ -44,7 +44,7 @@ class EmprestimoService {
     await emprestimo.save();
     return emprestimo;
   }
-  async excluir(id) {
+  async deletar(id) {
     const emprestimo = await this.buscarPorId(id); 
     await emprestimo.destroy();
     return true;
