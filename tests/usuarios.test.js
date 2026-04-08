@@ -51,80 +51,118 @@ describe("Usuários", () => {
     expect(res.data.tipo).toBe("aluno");
   });
 
-  // test("/usuarios deve retornar 400 ao criar usuário sem nome", async () => {
-  //   try {
-  //     await axios.post(
-  //      `${api}/usuarios`, {
-  //        email: "joao@email.com",
-  //        senha: "123456",
-  //       tipo: "aluno",
-  //     });
-  //   } catch (err) {
-  //     expect(err.response.status).toBe(400);
-  //   }
-  // });
+  test("/usuarios deve retornar 400 ao criar usuário sem nome", async () => {
+    try {
+      await axios.post(
+       `${api}/usuarios/criar`, 
+       {
+         email: "joao@email.com",
+         senha: "123456",
+        tipo: "aluno",
+      },
+      {headers: { 'Content-Type': 'application/json' }}
+    );
+    } catch (err) {
+      expect(err.response.status).toBe(400);
+    }
+  });
 
-  // test("/usuarios deve retornar 400 ao criar usuário sem email", async () => {
-  //   try {
-  //     await axios.post(`${api}/usuarios`, {
-  //       nome: "João Silva",
-  //       senha: "123456",
-  //       tipo: "aluno",
-  //     });
-  //   } catch (err) {
-  //     expect(err.response.status).toBe(400);
-  //   }
-  // });
+  test("/usuarios deve retornar 400 ao criar usuário sem email", async () => {
+    try {
+      await axios.post(
+        `${api}/usuarios/criar`, 
+        {
+          nome: "João Silva",
+          senha: "123456",
+          tipo: "aluno",
+        },
+        {headers: { 'Content-Type': 'application/json' }}
+      );
+    } catch (err) {
+      expect(err.response.status).toBe(400);
+    }
+  });
 
-  // test("/usuarios deve retornar 400 ao criar usuário com email já cadastrado", async () => {
-  //   const email = `duplicado_${Date.now()}@email.com`;
-  //   await axios.post(`${api}/usuarios`, { nome: "Maria Souza", email, senha: "123456", tipo: "aluno" });
+  test("/usuarios deve retornar 400 ao criar usuário com email já cadastrado", async () => {
+    const email = `duplicado_${Date.now()}@email.com`;
+    await axios.post(
+     `${api}/usuarios/criar`, 
+     { 
+       nome: "Maria Souza", 
+       email, 
+       senha: "123456", 
+       tipo: "aluno" 
+     },
+     {headers: { 'Content-Type': 'application/json' }}
+    );
+  
+    try {
+      await axios.post(
+       `${api}/usuarios/criar`, 
+       { 
+         nome: "Carlos Lima", 
+         email, 
+         senha: "abcdef", 
+         tipo: "aluno" 
+       },
+      {headers: { 'Content-Type': 'application/json' }});
+    } catch (err) {
+      expect(err.response.status).toBe(400);
+    }
+  });
 
-  //   try {
-  //     await axios.post(`${api}/usuarios`, { nome: "Carlos Lima", email, senha: "abcdef", tipo: "aluno" });
-  //   } catch (err) {
-  //     expect(err.response.status).toBe(400);
-  //   }
-  // });
+  test("/usuarios/atualizar/:id deve atualizar os dados de um usuário", async () => {
+    const criado = await axios.post(
+      `${api}/usuarios/criar`, 
+      {
+        nome: "Pedro Antigo",
+        email: `pedro_${Date.now()}@email.com`,
+        senha: "123456",
+        tipo: "aluno",
+      },
+      {headers: { 'Content-Type': 'application/json' }}
+    );
 
-  // test("/usuarios/:id deve atualizar os dados de um usuário", async () => {
-  //   const criado = await axios.post(`${api}/usuarios`, {
-  //     nome: "Pedro Antigo",
-  //     email: `pedro_${Date.now()}@email.com`,
-  //     senha: "123456",
-  //     tipo: "aluno",
-  //   });
+    const res = await axios.patch(
+      `${api}/usuarios/atualizar/${criado.data.id}`, 
+      { nome: "Pedro Novo" }
+    );
+    expect(res.status).toBe(200);
+    expect(res.data.nome).toBe("Pedro Novo");
+  });
 
-  //   const res = await axios.put(`${api}/usuarios/${criado.data.id}`, { nome: "Pedro Novo" });
-  //   expect(res.status).toBe(200);
-  //   expect(res.data.nome).toBe("Pedro Novo");
-  // });
+  test("/usuarios/atualizar/:id deve retornar 404 ao atualizar usuário inexistente", async () => {
+    try {
+      await axios.patch(
+        `${api}/usuarios/atualizar/99999`, 
+        { nome: "Ninguém" }
+      );
+    } catch (err) {
+      expect(err.response.status).toBe(404);
+    }
+  });
 
-  // test("/usuarios/:id deve retornar 404 ao atualizar usuário inexistente", async () => {
-  //   try {
-  //     await axios.put(`${api}/usuarios/99999`, { nome: "Ninguém" });
-  //   } catch (err) {
-  //     expect(err.response.status).toBe(404);
-  //   }
-  // });
+  test("/usuarios/deletar/:id deve remover um usuário", async () => {
+    const criado = await axios.post(
+      `${api}/usuarios/criar`, 
+      {
+        nome: "Para Deletar",
+        email: `deletar_${Date.now()}@email.com`,
+        senha: "123456",
+        tipo: "aluno",
+      },
+      {headers: { 'Content-Type': 'application/json' }}
+    );
+    
+    const res = await axios.delete(`${api}/usuarios/deletar/${criado.data.id}`);
+    expect(res.status).toBe(200);
+  });
 
-  // test("/usuarios/:id deve remover um usuário", async () => {
-  //   const criado = await axios.post(`${api}/usuarios`, {
-  //     nome: "Para Deletar",
-  //     email: `deletar_${Date.now()}@email.com`,
-  //     senha: "123456",
-  //     tipo: "aluno",
-  //   });
-
-  //   const res = await axios.delete(`${api}/usuarios/${criado.data.id}`);
-  //   expect(res.status).toBe(200);
-  // });
-
-  // test("/usuarios/:id deve retornar 404 ao deletar usuário inexistente", async () => {
-  //   try {
-  //     await axios.delete(`${api}/usuarios/99999`);
-  //   } catch (err) {
-  //     expect(err.response.status).toBe(404);
-  //   }
-  // });
+  test("/usuarios/deletar/:id deve retornar 404 ao deletar usuário inexistente", async () => {
+    try {
+      await axios.delete(`${api}/usuarios/deletar/99999`);
+    } catch (err) {
+      expect(err.response.status).toBe(404);
+    }
+  });
 });
