@@ -3,7 +3,7 @@ const EmprestimoController = require('../controllers/emprestimoController');
 
 const router = Router();
 
-router.post('/', EmprestimoController.criar); 
+router.post('/criar', EmprestimoController.criar); 
 router.get('/', EmprestimoController.listar);
 router.get('/:id', EmprestimoController.buscarPorId);
 router.put('/:id/devolver', EmprestimoController.devolver); 

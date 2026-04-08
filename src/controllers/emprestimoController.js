@@ -1,8 +1,7 @@
 const { Emprestimo } = require('../models'); // Importação padrão do Sequelize (via index)
 
 class EmprestimoController {
-  
-  // POST /emprestimos
+
   async criar(req, res) {
     try {
       const { livro_id, usuario_id, data_devolucao_prevista } = req.body;
@@ -12,21 +11,21 @@ class EmprestimoController {
         return res.status(400).json({ error: "Dados obrigatórios ausentes" });
       }
 
-      const jaEmprestado = await Emprestimo.findOne({ 
-        where: { livro_id, status: 'ATIVO' } 
+      const jaEmprestado = await Emprestimo.findOne({
+        where: { livro_id, status: 'ATIVO' }
       });
 
       if (jaEmprestado) {
         return res.status(400).json({ error: "Livro já está emprestado" });
       }
 
-     const novoEmprestimo = await Emprestimo.create({
-  livro_id,
-  usuario_id,
-  data_devolucao_prevista,  
-  data_emprestimo: new Date().toISOString().split('T')[0], // Formato YYYY-MM-DD
-  status: 'ATIVO'
-});
+      const novoEmprestimo = await Emprestimo.create({
+        livro_id,
+        usuario_id,
+        data_devolucao_prevista,
+        data_emprestimo: new Date().toISOString().split('T')[0], // Formato YYYY-MM-DD
+        status: 'ATIVO'
+      });
 
       return res.status(201).json(novoEmprestimo);
     } catch (error) {
@@ -95,7 +94,7 @@ class EmprestimoController {
       }
 
       await emprestimo.destroy();
-      return res.status(200).send(); 
+      return res.status(200).send();
     } catch (error) {
       console.error("Erro ao excluir empréstimo:", error);
       return res.status(500).json({ error: error.message });

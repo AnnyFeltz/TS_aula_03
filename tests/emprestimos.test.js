@@ -8,7 +8,7 @@ describe("Empréstimos", () => {
     
     test("deve registrar um novo empréstimo", async () => {
         const res = await axios.post(
-            `${api}/emprestimos`, 
+            `${api}/emprestimos/criar`, 
             {
                 livro_id: LIVRO_ID,
                 usuario_id: USUARIO_ID,
@@ -82,7 +82,7 @@ describe("Empréstimos", () => {
 
     test("deve retornar 400 ao registrar empréstimo sem livro_id", async () => {
         try {
-            await axios.post(`${api}/emprestimos`, {
+            await axios.post(`${api}/emprestimos/criar`, {
                 usuario_id: USUARIO_ID,
                 data_devolucao_prevista: "2025-05-01",
             });
@@ -93,7 +93,7 @@ describe("Empréstimos", () => {
 
     test("deve retornar 400 ao registrar empréstimo sem usuario_id", async () => {
         try {
-            await axios.post(`${api}/emprestimos`, {
+            await axios.post(`${api}/emprestimos/criar`, {
                 livro_id: LIVRO_ID,
                 data_devolucao_prevista: "2025-05-01",
             });
@@ -104,7 +104,7 @@ describe("Empréstimos", () => {
 
     test("deve retornar 400 ao registrar empréstimo sem data de devolução", async () => {
         try {
-            await axios.post(`${api}/emprestimos`, {
+            await axios.post(`${api}/emprestimos/criar`, {
                 livro_id: LIVRO_ID,
                 usuario_id: USUARIO_ID,
             });
@@ -114,7 +114,7 @@ describe("Empréstimos", () => {
     });
 
     test("deve registrar a devolução de um empréstimo", async () => {
-        const temp = await axios.post(`${api}/emprestimos`, {
+        const temp = await axios.post(`${api}/emprestimos/criar`, {
             livro_id: 4, usuario_id: 1, data_devolucao_prevista: "2025-05-01"
         });
         // Rota PUT /emprestimos/:id/devolver definida no Controller anterior
