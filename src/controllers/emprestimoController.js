@@ -52,30 +52,12 @@ class EmprestimoController {
     return res.status(200).json(emprestimo);
   }
 
-<<<<<<< HEAD
-  async excluir(req, res) {
-    try {
-      const { id } = req.params;
-      const emprestimo = await Emprestimo.findByPk(id);
-
-      if (!emprestimo) {
-        return res.status(404).json({ error: "Empréstimo não encontrado" });
-      }
-
-      await emprestimo.destroy();
-      return res.status(200).send();
-    } catch (error) {
-      console.error("Erro ao excluir empréstimo:", error);
-      return res.status(500).json({ error: error.message });
-    }
-=======
   async deletar(req, res) {
     const emprestimo = await Emprestimo.findByPk(req.params.id);
     if (!emprestimo) return res.status(404).json({ message: "Empréstimo não encontrado" });
     
     await emprestimo.destroy();
     return res.status(200).json({ message: "Excluído com sucesso" });
->>>>>>> cafd03d716a3bea41ce541265b07c4386ca9b159
   }
 
   async listarPorUsuario(req, res) {

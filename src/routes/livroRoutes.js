@@ -3,11 +3,10 @@ const { criar, listar, atualizar, buscarId, deletar } = require('../controllers/
 
 const router = Router();
 
-router.post('/criar', criar); //Anny
-//mudar para ser só disponiveis
-router.get('/', listar); //Anny
-router.get('/:id', buscarId); //Anny
-router.patch('/atualizar/:id', atualizar); //Yasmim
-router.delete('/deletar/:id', deletar); //Yasmim
+router.post('/criar', criar); 
+router.get('/', listar); 
+router.get('/:id', buscarId); 
+router.patch('/atualizar/:id', atualizar); 
+router.delete('/deletar/:id', deletar); 
 
 module.exports = router;
