@@ -6,7 +6,6 @@ class EmprestimoController {
     try {
       const { livro_id, usuario_id, data_devolucao_prevista } = req.body;
 
-      // Validação para os testes que esperam erro 400
       if (!livro_id || !usuario_id || !data_devolucao_prevista) {
         return res.status(400).json({ error: "Dados obrigatórios ausentes" });
       }
@@ -34,7 +33,6 @@ class EmprestimoController {
     }
   }
 
-  // GET /emprestimos
   async listar(req, res) {
     try {
       const lista = await Emprestimo.findAll();
@@ -45,7 +43,6 @@ class EmprestimoController {
     }
   }
 
-  // GET /emprestimos/:id
   async buscarPorId(req, res) {
     try {
       const { id } = req.params;
@@ -62,7 +59,6 @@ class EmprestimoController {
     }
   }
 
-  // PUT /emprestimos/:id/devolver
   async devolver(req, res) {
     try {
       const { id } = req.params;
@@ -83,7 +79,6 @@ class EmprestimoController {
     }
   }
 
-  // DELETE /emprestimos/:id
   async excluir(req, res) {
     try {
       const { id } = req.params;
@@ -101,7 +96,6 @@ class EmprestimoController {
     }
   }
 
-  // GET /emprestimos/usuario/:usuario_id
   async listarPorUsuario(req, res) {
     try {
       const { usuario_id } = req.params;

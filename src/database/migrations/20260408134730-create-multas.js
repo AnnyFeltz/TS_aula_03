@@ -3,17 +3,17 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('emprestimos', {
+    await queryInterface.createTable('multas', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      livro_id: {
+      emprestimo_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: 'livros', key: 'id' },
+        references: { model: 'emprestimos', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
@@ -24,11 +24,6 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      data_emprestimo: {
-        type: Sequelize.DATE,
-        allowNull: false,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-      },
       data_devolucao_prevista: {
         type: Sequelize.DATEONLY,
         allowNull: false
@@ -37,9 +32,9 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: true
       },
-      status: {
-        type: Sequelize.STRING,
-        defaultValue: 'ATIVO'
+      valor_multa: {
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: true,
       },
       created_at: {
         allowNull: false,
@@ -52,7 +47,7 @@ module.exports = {
     });
   },
 
-  async down(queryInterface) {
-    await queryInterface.dropTable('emprestimos');
+  async down (queryInterface) {
+    await queryInterface.dropTable('multas');
   }
 };
