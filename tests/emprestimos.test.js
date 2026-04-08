@@ -7,11 +7,15 @@ const USUARIO_ID = 1;
 describe("Empréstimos", () => {
     
     test("deve registrar um novo empréstimo", async () => {
-        const res = await axios.post(`${api}/emprestimos`, {
-            livro_id: LIVRO_ID,
-            usuario_id: USUARIO_ID,
-            data_devolucao_prevista: "2025-05-01",
-        });
+        const res = await axios.post(
+            `${api}/emprestimos`, 
+            {
+                livro_id: LIVRO_ID,
+                usuario_id: USUARIO_ID,
+                data_devolucao_prevista: "2025-05-01",
+            }, 
+            {headers: { 'Content-Type': 'application/json' }}
+        );
         expect(res.status).toBe(201);
         expect(res.data).toHaveProperty("id");
 
@@ -26,26 +30,42 @@ describe("Empréstimos", () => {
     });
 
     test("deve deletar um empréstimo", async () => {
-        const temp = await axios.post(`${api}/emprestimos`, {
-            livro_id: 2, usuario_id: 1, data_devolucao_prevista: "2025-05-01"
-        });
+        const temp = await axios.post(
+            `${api}/emprestimos`, 
+            {
+                livro_id: 2, 
+                usuario_id: 1, 
+                data_devolucao_prevista: "2025-05-01"
+            },
+            {headers: { 'Content-Type': 'application/json' }}
+        );
         const res = await axios.delete(`${api}/emprestimos/${temp.data.id}`);
         expect(res.status).toBe(200);
     });
 
     test("deve retornar 404 ao deletar empréstimo inexistente", async () => {
         try {
-            await axios.delete(`${api}/emprestimos/9999`);
+            await axios.delete(
+                `${api}/emprestimos/9999`, 
+                {headers: { 'Content-Type': 'application/json' }}
+            );
         } catch (err) {
             expect(err.response.status).toBe(404);
         }
     });
 
     test("deve retornar um empréstimo pelo id", async () => {
-        const temp = await axios.post(`${api}/emprestimos`, {
-            livro_id: 3, usuario_id: 1, data_devolucao_prevista: "2025-05-01"
-        });
-        const res = await axios.get(`${api}/emprestimos/${temp.data.id}`);
+        const temp = await axios.post(
+            `${api}/emprestimos`, 
+            {
+                livro_id: 3, 
+                usuario_id: 1, 
+                data_devolucao_prevista: "2025-05-01"}
+            );
+        const res = await axios.get(
+            `${api}/emprestimos/${temp.data.id}`,
+            {headers: { 'Content-Type': 'application/json' }}
+        );
         expect(res.status).toBe(200);
         expect(res.data.id).toBe(temp.data.id);
         
