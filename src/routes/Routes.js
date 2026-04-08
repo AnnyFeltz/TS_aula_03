@@ -8,5 +8,6 @@ const router = Router();
 router.use('/livros', livroRoutes);
 router.use('/usuarios', usuarioRoutes);
 router.use('/emprestimos', emprestimoRoutes);
+// router.use('/multas', multaRoutes);
 
 module.exports = router;
