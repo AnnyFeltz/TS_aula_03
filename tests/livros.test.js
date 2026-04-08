@@ -34,8 +34,18 @@ test('GET /livro/:id busca livro por id', async () => {
 });
 
 test('PATCH /livros/atualizar/:id', async () => {
+    const livro = await axios.post(
+        `${api}/livros/criar`, 
+        {
+            titulo: 'Livro de Teste', 
+            autor: 'Autor de Teste', 
+            disponivel: true
+        }, 
+        {headers: { 'Content-Type': 'application/json' }}
+    );
+
     const response = await axios.patch(
-        `${api}/livros/atualizar/1`, 
+        `${api}/livros/atualizar/${livro.data.id}`, 
         { titulo: 'Novo Nome' }, 
         { headers: { 'Content-Type': 'application/json' }}
     );
@@ -44,8 +54,18 @@ test('PATCH /livros/atualizar/:id', async () => {
 });
 
 test('DELETE /livros/deletar/:id', async () => {
+    const livro = await axios.post(
+        `${api}/livros/criar`, 
+        {
+            titulo: 'Livro de Teste', 
+            autor: 'Autor de Teste', 
+            disponivel: true
+        }, 
+        {headers: { 'Content-Type': 'application/json' }}
+    );
+
     const response = await axios.delete(
-        `${api}/livros/deletar/1`, 
+        `${api}/livros/deletar/${livro.data.id}`, 
         { headers: { 'Content-Type': 'application/json' }}
     );
     expect(response.status).toBe(200);
