@@ -13,7 +13,6 @@ const criar = async (req, res) => {
     }
 }
 
-//atualizar pra ser só os disponiveis
 const listar = async (_, res) => {
     try {
         const livros = await listarLivros();
@@ -25,8 +24,6 @@ const listar = async (_, res) => {
         return res.status(500).json({ error: 'Ocorreu um erro ao listar os livros' });
     }
 }
-
-//talvez fazer um não disponiveis??
 
 const buscarId = async (req, res) => {
     try {

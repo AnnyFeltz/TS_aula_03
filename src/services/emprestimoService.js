@@ -34,7 +34,7 @@ const listarTodosEmprestimos = async () => {
     return await Emprestimo.findAll();
 };
 
-const buscarEmprestimoPorId = async (id) => {
+const buscarEmprestimoId = async (id) => {
     const emprestimo = await Emprestimo.findByPk(id);
     if (!emprestimo) {
         const error = new Error("Empréstimo não encontrado");
@@ -45,7 +45,7 @@ const buscarEmprestimoPorId = async (id) => {
 };
 
 const registrarDevolucao = async (id) => {
-    const emprestimo = await buscarEmprestimoPorId(id); 
+    const emprestimo = await buscarEmprestimoId(id); 
     
     await emprestimo.update({
         status: 'DEVOLVIDO',
@@ -56,7 +56,7 @@ const registrarDevolucao = async (id) => {
 };
 
 const atualizarEmprestimo = async (id, dados) => {
-    const emprestimo = await buscarEmprestimoPorId(id); 
+    const emprestimo = await buscarEmprestimoId(id); 
     const { data_devolucao_prevista } = dados;
 
     if (data_devolucao_prevista) {
@@ -67,13 +67,13 @@ const atualizarEmprestimo = async (id, dados) => {
 };
 
 const deletarEmprestimo = async (id) => {
-    const emprestimo = await buscarEmprestimoPorId(id); 
+    const emprestimo = await buscarEmprestimoId(id); 
     await emprestimo.destroy();
     return true;
 };
 
-const listarPorUsuario = async (usuario_id) => {
+const buscarUsuarioID = async (usuario_id) => {
     return await Emprestimo.findAll({ where: { usuario_id } });
 };
 
-module.exports = { criarEmprestimo, listarTodosEmprestimos, buscarEmprestimoPorId, registrarDevolucao, atualizarEmprestimo, deletarEmprestimo, listarPorUsuario };
+module.exports = { criarEmprestimo, listarTodosEmprestimos, buscarEmprestimoId, registrarDevolucao, atualizarEmprestimo, deletarEmprestimo, buscarUsuarioID };

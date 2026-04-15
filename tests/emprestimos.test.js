@@ -118,7 +118,7 @@ describe("Empréstimos", () => {
             usuario_id: USUARIO_ID,
             data_devolucao_prevista: "2025-05-01"
         });
-        const res = await axios.put(`${api}/emprestimos/devolver/${temp.data.id}`);
+        const res = await axios.patch(`${api}/emprestimos/devolver/${temp.data.id}`);
         expect(res.status).toBe(200);
         expect(res.data.status).toBe("DEVOLVIDO");
     });
