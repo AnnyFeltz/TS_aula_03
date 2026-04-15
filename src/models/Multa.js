@@ -26,11 +26,20 @@ const Multa = sequelize.define('Multa', {
   valor_multa: {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: true,
-  }
+  },
+  quitada: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  },
 }, {
   tableName: 'multas',
   timestamps: true,
   underscored: false,
 });
 
+Multa.associate = (models) => {
+  Multa.belongsTo(models.Emprestimo, { foreignKey: 'emprestimo_id' });
+  Multa.belongsTo(models.Usuario, { foreignKey: 'usuario_id' });
+};
 module.exports = Multa;

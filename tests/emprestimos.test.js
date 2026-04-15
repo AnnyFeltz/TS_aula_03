@@ -75,7 +75,7 @@ describe("Empréstimos", () => {
             usuario_id: USUARIO_ID,
             data_devolucao_prevista: "2025-05-01"
         });
-        const res = await axios.get(`${api}/emprestimos/buscar/${temp.data.id}`);
+        const res = await axios.get(`${api}/emprestimos/${temp.data.id}`);
         expect(res.status).toBe(200);
         expect(res.data.id).toBe(temp.data.id);
 
@@ -84,7 +84,7 @@ describe("Empréstimos", () => {
 
     test("deve retornar 404 para empréstimo inexistente", async () => {
         try {
-            await axios.get(`${api}/emprestimos/buscar/9999`);
+            await axios.get(`${api}/emprestimos/9999`);
         } catch (err) {
             expect(err.response.status).toBe(404);
         }

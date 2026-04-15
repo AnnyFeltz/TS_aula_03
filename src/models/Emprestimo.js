@@ -39,4 +39,10 @@ const Emprestimo = sequelize.define('Emprestimo', {
     underscored: true, 
 });
 
+Emprestimo.associate = (models) => {
+    Emprestimo.belongsTo(models.Livro, { foreignKey: 'livro_id' });
+    Emprestimo.belongsTo(models.Usuario, { foreignKey: 'usuario_id' });
+    Emprestimo.hasOne(models.Multa, { foreignKey: 'emprestimo_id' });
+}
+
 module.exports = Emprestimo;
