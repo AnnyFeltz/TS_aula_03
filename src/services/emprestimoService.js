@@ -1,56 +1,79 @@
-const Emprestimo = require('../models/');
-const Emprestimo = require('../models/Emprestimo');
+const { Emprestimo } = require('../models');
 
-class EmprestimoService {
-  async criar(dados) {
+const criarEmprestimo = async (dados) => {
     const { livro_id, usuario_id, data_devolucao_prevista } = dados;
+
     if (!livro_id || !usuario_id || !data_devolucao_prevista) {
-      const error = new Error("Campos obrigatórios ausentes");
-      error.status = 400;
-      throw error;
+        const error = new Error("Campos obrigatórios ausentes");
+        error.status = 400;
+        throw error;
     }
+
     const jaEmprestado = await Emprestimo.findOne({ 
-      where: { livro_id, status: 'ATIVO' } 
+        where: { livro_id, status: 'ATIVO' } 
     });
+
     if (jaEmprestado) {
-      const error = new Error("Este livro já possui um empréstimo ativo");
-      error.status = 400;
-      throw error;
+        const error = new Error("Este livro já possui um empréstimo ativo");
+        error.status = 400;
+        throw error;
     }
-    return await Emprestimo.create({
-      livro_id,
-      usuario_id,
-      data_devolucao_prevista,
-      data_emprestimo: new Date(),
-      status: 'ATIVO'
+
+    const emprestimo = await Emprestimo.create({
+        livro_id,
+        usuario_id,
+        data_devolucao_prevista,
+        data_emprestimo: new Date(),
+        status: 'ATIVO'
     });
-  }
-  async listarTodos() {
+
+    return emprestimo;
+};
+
+const listarTodosEmprestimos = async () => {
     return await Emprestimo.findAll();
-  }
-  async buscarPorId(id) {
+};
+
+const buscarEmprestimoPorId = async (id) => {
     const emprestimo = await Emprestimo.findByPk(id);
     if (!emprestimo) {
-      const error = new Error("Empréstimo não encontrado");
-      error.status = 404;
-      throw error;
+        const error = new Error("Empréstimo não encontrado");
+        error.status = 404;
+        throw error;
     }
     return emprestimo;
-  }
-  async registrarDevolucao(id) {
-    const emprestimo = await this.buscarPorId(id); 
-    emprestimo.status = 'DEVOLVIDO';
-    emprestimo.data_devolucao_real = new Date();
-    await emprestimo.save();
+};
+
+const registrarDevolucao = async (id) => {
+    const emprestimo = await buscarEmprestimoPorId(id); 
+    
+    await emprestimo.update({
+        status: 'DEVOLVIDO',
+        data_devolucao_real: new Date()
+    });
+
     return emprestimo;
-  }
-  async deletar(id) {
-    const emprestimo = await this.buscarPorId(id); 
+};
+
+const atualizarEmprestimo = async (id, dados) => {
+    const emprestimo = await buscarEmprestimoPorId(id); 
+    const { data_devolucao_prevista } = dados;
+
+    if (data_devolucao_prevista) {
+        await emprestimo.update({ data_devolucao_prevista });
+    }
+
+    return emprestimo;
+};
+
+const deletarEmprestimo = async (id) => {
+    const emprestimo = await buscarEmprestimoPorId(id); 
     await emprestimo.destroy();
     return true;
-  }
-  async listarPorUsuario(usuario_id) {
+};
+
+const listarPorUsuario = async (usuario_id) => {
     return await Emprestimo.findAll({ where: { usuario_id } });
-  }
-}
-module.exports = new EmprestimoService();
+};
+
+module.exports = { criarEmprestimo, listarTodosEmprestimos, buscarEmprestimoPorId, registrarDevolucao, atualizarEmprestimo, deletarEmprestimo, listarPorUsuario };

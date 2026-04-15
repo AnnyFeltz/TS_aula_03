@@ -1,69 +1,77 @@
-const { Emprestimo } = require('../models');
+const { criarEmprestimo, listarTodosEmprestimos, buscarEmprestimoPorId, registrarDevolucao, atualizarEmprestimo, deletarEmprestimo, listarPorUsuario } = require('../services/emprestimoService');
 
-class EmprestimoController {
-  async criar(req, res) {
+const criar = async (req, res) => {
     try {
-      const { livro_id, usuario_id, data_devolucao_prevista } = req.body;
-
-      if (!livro_id || !usuario_id || !data_devolucao_prevista) {
-        return res.status(400).json({ message: "Campos obrigatórios ausentes" });
-      }
-
-      const jaEmprestado = await Emprestimo.findOne({
-        where: { livro_id, status: 'ATIVO' }
-      });
-
-      if (jaEmprestado) {
-        return res.status(400).json({ message: "Este livro já possui um empréstimo ativo" });
-      }
-
-      const novoEmprestimo = await Emprestimo.create({
-        livro_id,
-        usuario_id,
-        data_devolucao_prevista,
-        data_emprestimo: new Date(),
-        status: 'ATIVO'
-      });
-
-      return res.status(201).json(novoEmprestimo);
+        const novoEmprestimo = await criarEmprestimo(req.body);
+        return res.status(201).json(novoEmprestimo);
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+        // Se for um erro de validação (status 400), retorna a mensagem específica
+        if (error.status === 400) return res.status(400).json({ message: error.message });
+        return res.status(500).json({ message: "Ocorreu um erro ao criar o empréstimo" });
     }
-  }
+};
 
-  async listar(req, res) {
-    const lista = await Emprestimo.findAll();
-    return res.status(200).json(lista);
-  }
+const listar = async (_, res) => {
+    try {
+        const lista = await listarTodosEmprestimos();
+        return res.status(200).json(lista);
+    } catch (error) {
+        return res.status(500).json({ message: "Erro ao listar empréstimos" });
+    }
+};
 
-  async buscarPorId(req, res) {
-    const emprestimo = await Emprestimo.findByPk(req.params.id);
-    if (!emprestimo) return res.status(404).json({ message: "Empréstimo não encontrado" });
-    return res.status(200).json(emprestimo);
-  }
+const buscarPorId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const emprestimo = await buscarEmprestimoPorId(id);
+        return res.status(200).json(emprestimo);
+    } catch (error) {
+        if (error.status === 404) return res.status(404).json({ message: error.message });
+        return res.status(500).json({ message: "Erro ao buscar empréstimo" });
+    }
+};
 
-  async devolver(req, res) {
-    const emprestimo = await Emprestimo.findByPk(req.params.id);
-    if (!emprestimo) return res.status(404).json({ message: "Empréstimo não encontrado" });
-    
-    emprestimo.status = 'DEVOLVIDO';
-    emprestimo.data_devolucao_real = new Date();
-    await emprestimo.save();
-    return res.status(200).json(emprestimo);
-  }
+const devolver = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const emprestimo = await registrarDevolucao(id);
+        return res.status(200).json(emprestimo);
+    } catch (error) {
+        if (error.status === 404) return res.status(404).json({ message: error.message });
+        return res.status(500).json({ message: "Erro ao registrar devolução" });
+    }
+};
 
-  async deletar(req, res) {
-    const emprestimo = await Emprestimo.findByPk(req.params.id);
-    if (!emprestimo) return res.status(404).json({ message: "Empréstimo não encontrado" });
-    
-    await emprestimo.destroy();
-    return res.status(200).json({ message: "Excluído com sucesso" });
-  }
+const atualizar = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const emprestimo = await atualizarEmprestimo(id, req.body);
+        return res.status(200).json(emprestimo);
+    } catch (error) {
+        if (error.status === 404) return res.status(404).json({ message: error.message });
+        return res.status(500).json({ message: "Erro ao atualizar empréstimo" });
+    }
+};
 
-  async listarPorUsuario(req, res) {
-    const lista = await Emprestimo.findAll({ where: { usuario_id: req.params.usuario_id } });
-    return res.status(200).json(lista);
-  }
-}
+const deletar = async (req, res) => {
+    try {
+        const { id } = req.params;
+        await deletarEmprestimo(id);
+        return res.status(200).json({ message: "Excluído com sucesso" });
+    } catch (error) {
+        if (error.status === 404) return res.status(404).json({ message: error.message });
+        return res.status(500).json({ message: "Erro ao deletar empréstimo" });
+    }
+};
 
-module.exports = new EmprestimoController();
+const buscarPorUsuario = async (req, res) => {
+    try {
+        const { usuario_id } = req.params;
+        const lista = await listarPorUsuario(usuario_id);
+        return res.status(200).json(lista);
+    } catch (error) {
+        return res.status(500).json({ message: "Erro ao buscar empréstimos do usuário" });
+    }
+};
+
+module.exports = { criar, listar, buscarPorId, devolver, atualizar, deletar, buscarPorUsuario };
