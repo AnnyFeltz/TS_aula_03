@@ -35,7 +35,7 @@ const Multa = sequelize.define('Multa', {
 }, {
   tableName: 'multas',
   timestamps: true,
-  underscored: false,
+  underscored: true,
 });
 
 Multa.associate = (models) => {

@@ -30,7 +30,7 @@ describe("Empréstimos", () => {
         }
     });
 
-    test("deve registrar um novo empréstimo", async () => {
+    test("/emprestimos/criar deve registrar um novo empréstimo", async () => {
         const res = await axios.post(
             `${api}/emprestimos/criar`,
             {
@@ -45,13 +45,13 @@ describe("Empréstimos", () => {
         await axios.delete(`${api}/emprestimos/deletar/${res.data.id}`);
     });
 
-    test("deve retornar uma lista de empréstimos", async () => {
+    test("/emprestimos/ deve retornar uma lista de empréstimos", async () => {
         const res = await axios.get(`${api}/emprestimos`);
         expect(res.status).toBe(200);
         expect(Array.isArray(res.data)).toBe(true);
     });
 
-    test("deve deletar um empréstimo", async () => {
+    test("/emprestimos/deletar/:id deve deletar um empréstimo", async () => {
         const temp = await axios.post(`${api}/emprestimos/criar`, {
             livro_id: LIVRO_ID,
             usuario_id: USUARIO_ID,
@@ -61,7 +61,7 @@ describe("Empréstimos", () => {
         expect(res.status).toBe(200);
     });
 
-    test("deve retornar 404 ao deletar empréstimo inexistente", async () => {
+    test("/emprestimos/deletar/:id deve retornar 404 ao deletar empréstimo inexistente", async () => {
         try {
             await axios.delete(`${api}/emprestimos/deletar/9999`);
         } catch (err) {
@@ -69,7 +69,7 @@ describe("Empréstimos", () => {
         }
     });
 
-    test("deve retornar um empréstimo pelo id", async () => {
+    test("/emprestimos/:id deve retornar um empréstimo pelo id", async () => {
         const temp = await axios.post(`${api}/emprestimos/criar`, {
             livro_id: LIVRO_ID,
             usuario_id: USUARIO_ID,
@@ -82,7 +82,7 @@ describe("Empréstimos", () => {
         await axios.delete(`${api}/emprestimos/deletar/${temp.data.id}`);
     });
 
-    test("deve retornar 404 para empréstimo inexistente", async () => {
+    test("/emprestimos/:id deve retornar 404 para empréstimo inexistente", async () => {
         try {
             await axios.get(`${api}/emprestimos/9999`);
         } catch (err) {
@@ -90,7 +90,7 @@ describe("Empréstimos", () => {
         }
     });
 
-    test("deve retornar 400 ao registrar empréstimo sem livro_id", async () => {
+    test("/emprestimos/criar deve retornar 400 ao registrar empréstimo sem livro_id", async () => {
         try {
             await axios.post(`${api}/emprestimos/criar`, {
                 usuario_id: USUARIO_ID,
@@ -101,7 +101,7 @@ describe("Empréstimos", () => {
         }
     });
 
-    test("deve retornar 400 ao registrar empréstimo sem usuario_id", async () => {
+    test("/emprestimos/criar deve retornar 400 ao registrar empréstimo sem usuario_id", async () => {
         try {
             await axios.post(`${api}/emprestimos/criar`, {
                 livro_id: LIVRO_ID,
@@ -112,7 +112,7 @@ describe("Empréstimos", () => {
         }
     });
 
-    test("deve registrar a devolução de um empréstimo", async () => {
+    test("/emprestimos/criar deve registrar a devolução de um empréstimo", async () => {
         const temp = await axios.post(`${api}/emprestimos/criar`, {
             livro_id: LIVRO_ID,
             usuario_id: USUARIO_ID,
@@ -123,13 +123,13 @@ describe("Empréstimos", () => {
         expect(res.data.status).toBe("DEVOLVIDO");
     });
 
-    test("deve listar empréstimos de um usuário específico", async () => {
+    test("/emprestimos/usuario/:usuario_id deve listar empréstimos de um usuário específico", async () => {
         const res = await axios.get(`${api}/emprestimos/usuario/${USUARIO_ID}`);
         expect(res.status).toBe(200);
         expect(Array.isArray(res.data)).toBe(true);
     });
 
-    test("deve retornar 400 ao emprestar livro já emprestado", async () => {
+    test("/emprestimos/criar deve retornar 400 ao emprestar livro já emprestado", async () => {
         await axios.post(`${api}/emprestimos/criar`, {
             livro_id: LIVRO_ID,
             usuario_id: USUARIO_ID,

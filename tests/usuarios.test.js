@@ -4,9 +4,25 @@ const api = `http://localhost:${process.env.PORT || 3000}`;
 console.log("Conectando na API em:", api);
 
 describe("Usuários", () => {
-  test("/usuarios deve retornar uma lista de usuários", async () => {
+  test("/usuarios/criar deve criar um novo usuário", async () => {
+    const res = await axios.post(`${api}/usuarios/criar`, 
+      {
+        nome: "João Silva",
+        email: `joao_${Date.now()}@email.com`,
+        senha: "123456",
+        tipo: "aluno",
+      },
+      {headers: { 'Content-Type': 'application/json' }}
+    );
+    expect(res.status).toBe(201);
+    expect(res.data).toHaveProperty("id");
+    expect(res.data.nome).toBe("João Silva");
+    expect(res.data.tipo).toBe("aluno");
+  });
+
+  test("/usuarios/ deve retornar uma lista de usuários", async () => {
     const res = await axios.get(
-      `${api}/usuarios`,
+      `${api}/usuarios/`,
       {headers: { 'Content-Type': 'application/json' }}
     );
     expect(res.status).toBe(200);
@@ -33,22 +49,6 @@ describe("Usuários", () => {
     } catch (err) {
       expect(err.response.status).toBe(404);
     }
-  });
-
-  test("/usuarios deve criar um novo usuário", async () => {
-    const res = await axios.post(`${api}/usuarios/criar`, 
-      {
-        nome: "João Silva",
-        email: `joao_${Date.now()}@email.com`,
-        senha: "123456",
-        tipo: "aluno",
-      },
-      {headers: { 'Content-Type': 'application/json' }}
-    );
-    expect(res.status).toBe(201);
-    expect(res.data).toHaveProperty("id");
-    expect(res.data.nome).toBe("João Silva");
-    expect(res.data.tipo).toBe("aluno");
   });
 
   test("/usuarios deve retornar 400 ao criar usuário sem nome", async () => {
