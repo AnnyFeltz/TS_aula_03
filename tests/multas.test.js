@@ -61,7 +61,7 @@ describe("Multas", () => {
         );
         expect(res.status).toBe(201);
         expect(res.data).toHaveProperty("id");
-        expect(res.data.usuario_id).toBe(usuarioTemp.data.id);
+        expect(res.usuario_id).toBe(usuarioTemp.id);
     });
 
     test('GET /multas/ lista todas as multas', async () => {
@@ -83,25 +83,11 @@ describe("Multas", () => {
     });
 
      test('GET /multas/usuario/:usuario_id busca multas por usuário', async () => {
-        const usuarioTemp = await axios.post(`${api}/usuarios/criar`, {
-            nome: "Usuário de Teste para Multa",
-            email: `usuario_${Date.now()}@email.com`,
-            senha: "123456",
-            tipo: "aluno",
-        });
-
-        const livroTemp = await axios.post(`${api}/livros/criar`, {
-            titulo: 'Livro de Teste para Multa',
-            autor: 'Autor de Teste',
-            disponivel: true
-        });
-        
-        const emprestimoTemp = await axios.post(`${api}/emprestimos/criar`, {
-            livro_id: livroTemp.data.id,
-            usuario_id: usuarioTemp.data.id,
-            data_devolucao_prevista: "2025-05-01"
-        });
-        
+        const usuarioTemp = await criarUsuario();
+        const livroTemp = await criarLivro();
+        const emprestimoTemp = await criarEmprestimo(usuarioTemp.id, livroTemp.id);
+        await criarMulta(usuarioTemp.id, emprestimoTemp.id);
+    
         await axios.post(
             `${api}/multas/criar`, 
             {
@@ -112,6 +98,7 @@ describe("Multas", () => {
             },
             {headers: { 'Content-Type': 'application/json' }}
         );
+
 
         const res = await axios.get(
             `${api}/multas/usuario/${usuarioTemp.data.id}`, 
