@@ -133,61 +133,159 @@ describe("Multas", () => {
         expect(res.data).toHaveProperty("id");
     });
 
-    // test('POST /multas/valor calcula o valor da multa', async () => {
-    //     const res = await axios.post(
-    //         `${api}/multas/valor`,
-    //         {
-    //             data_devolucao_prevista: "2025-05-01",
-    //             data_devolucao_real: "2025-05-10"
-    //         },
-    //         { headers: { 'Content-Type': 'application/json' }}
-    //     );
-    //     expect(res.status).toBe(200);
-    //     expect(res.data).toHaveProperty("valor");
-    // });
+    test('POST /multas/valor calcula o valor da multa', async () => {
+        const usuarioTemp = await axios.post(`${api}/usuarios/criar`, {
+            nome: "Usuário de Teste para Multa",
+            email: `usuario_${Date.now()}@email.com`,
+            senha: "123456",
+            tipo: "aluno",
+        });
+        
+        const livroTemp = await axios.post(`${api}/livros/criar`, {
+            titulo: 'Livro de Teste para Multa',
+            autor: 'Autor de Teste',
+            disponivel: true
+        });
+        
+        const emprestimoTemp = await axios.post(`${api}/emprestimos/criar`, {
+            livro_id: livroTemp.data.id,
+            usuario_id: usuarioTemp.data.id,
+            data_devolucao_prevista: "2025-05-01"
+        });
+        
+        const multa = await axios.post(
+            `${api}/multas/criar`, 
+            {
+                usuario_id: usuarioTemp.data.id,
+                emprestimo_id: emprestimoTemp.data.id,
+                data_devolucao_prevista: "2025-05-01",
+                data_devolucao_real: "2025-05-10"
+            }
+        );
 
-    // test('PATCH /multas/atualizar/:id atualiza uma multa', async () => {
-    //     const multa = await axios.post(
-    //         `${api}/multas/criar`, 
-    //         {
-    //             usuario_id: 1,
-    //             emprestimo_id: 1,
-    //             data_devolucao_prevista: "2025-05-01",
-    //             data_devolucao_real: "2025-05-10"
-    //         },
-    //         {headers: { 'Content-Type': 'application/json' }}
-    //     );
-    // });
+        const res = await axios.get(
+            `${api}/multas/valor/${multa.data.id}`
+        );
+        expect(res.status).toBe(200);
+        expect(res.data).toHaveProperty("valor_multa");
+    });
 
-    // test('PATCH /multas/quitar/:id quita uma multa', async () => {
-    //     const multa = await axios.post(
-    //         `${api}/multas/criar`, 
-    //         {
-    //             usuario_id: 1,
-    //             emprestimo_id: 1,
-    //             data_devolucao_prevista: "2025-05-01",
-    //             data_devolucao_real: "2025-05-10"
-    //         },
-    //         {headers: { 'Content-Type': 'application/json' }}
-    //     );
-    // });
+    test('PATCH /multas/atualizar/:id atualiza uma multa', async () => {
+        const usuarioTemp = await axios.post(`${api}/usuarios/criar`, {
+            nome: "Usuário de Teste para Multa",
+            email: `usuario_${Date.now()}@email.com`,
+            senha: "123456",
+            tipo: "aluno",
+        });
+        
+        const livroTemp = await axios.post(`${api}/livros/criar`, {
+            titulo: 'Livro de Teste para Multa',
+            autor: 'Autor de Teste',
+            disponivel: true
+        });
+        
+        const emprestimoTemp = await axios.post(`${api}/emprestimos/criar`, {
+            livro_id: livroTemp.data.id,
+            usuario_id: usuarioTemp.data.id,
+            data_devolucao_prevista: "2025-05-01"
+        });
+        
+        const multa = await axios.post(
+            `${api}/multas/criar`, 
+            {
+                usuario_id: usuarioTemp.data.id,
+                emprestimo_id: emprestimoTemp.data.id,
+                data_devolucao_prevista: "2025-05-01",
+                data_devolucao_real: "2025-05-10"
+            },
+            {headers: { 'Content-Type': 'application/json' }}
+        );
 
-    // test('DELETE /multas/deletar/:id deleta uma multa', async () => {
-    //     try {
-    //         const multa = await axios.post(
-    //             `${api}/multas/criar`, 
-    //             {
-    //                 usuario_id: 1,
-    //                 emprestimo_id: 1,
-    //                 data_devolucao_prevista: "2025-05-01",
-    //                 data_devolucao_real: "2025-05-10"
-    //             },
-    //             {headers: { 'Content-Type': 'application/json' }}
-    //         );
-    //         const res = await axios.delete(`${api}/multas/deletar/${multa.data.id}`);
-    //         expect(res.status).toBe(200);
-    //     } catch (err) {
-    //         expect(err.response.status).toBe(404);
-    //     }
-    // });
+        const res = await axios.patch(
+            `${api}/multas/atualizar/${multa.data.id}`, 
+            { data_devolucao_real: "2025-05-15" }, 
+            { headers: { 'Content-Type': 'application/json' }}
+        );
+        expect(res.status).toBe(200);
+        expect(res.data.data_devolucao_real).toBe("2025-05-15");
+    });
+
+    test('PATCH /multas/quitar/:id quita uma multa', async () => {
+        const usuarioTemp = await axios.post(`${api}/usuarios/criar`, {
+            nome: "Usuário de Teste para Multa",
+            email: `usuario_${Date.now()}@email.com`,
+            senha: "123456",
+            tipo: "aluno",
+        });
+        
+        const livroTemp = await axios.post(`${api}/livros/criar`, {
+            titulo: 'Livro de Teste para Multa',
+            autor: 'Autor de Teste',
+            disponivel: true
+        });
+        
+        const emprestimoTemp = await axios.post(`${api}/emprestimos/criar`, {
+            livro_id: livroTemp.data.id,
+            usuario_id: usuarioTemp.data.id,
+            data_devolucao_prevista: "2025-05-01"
+        });
+        
+        const multa = await axios.post(
+            `${api}/multas/criar`, 
+            {
+                usuario_id: usuarioTemp.data.id,
+                emprestimo_id: emprestimoTemp.data.id,
+                data_devolucao_prevista: "2025-05-01",
+                data_devolucao_real: "2025-05-10"
+            },
+            {headers: { 'Content-Type': 'application/json' }}
+        );
+        
+        const res = await axios.patch(
+            `${api}/multas/quitar/${multa.data.id}`, 
+            {}, 
+            { headers: { 'Content-Type': 'application/json' }}
+        );
+        expect(res.status).toBe(200);
+        expect(res.data).toHaveProperty("message");
+        expect(res.data.message).toBe("Multa quitada com sucesso");
+    });
+
+    test('DELETE /multas/deletar/:id deleta uma multa', async () => {
+        const usuarioTemp = await axios.post(`${api}/usuarios/criar`, {
+            nome: "Usuário de Teste para Multa",
+            email: `usuario_${Date.now()}@email.com`,
+            senha: "123456",
+            tipo: "aluno",
+        });
+        
+        const livroTemp = await axios.post(`${api}/livros/criar`, {
+            titulo: 'Livro de Teste para Multa',
+            autor: 'Autor de Teste',
+            disponivel: true
+        });
+        
+        const emprestimoTemp = await axios.post(`${api}/emprestimos/criar`, {
+            livro_id: livroTemp.data.id,
+            usuario_id: usuarioTemp.data.id,
+            data_devolucao_prevista: "2025-05-01"
+        });
+        
+        const multa = await axios.post(
+            `${api}/multas/criar`, 
+            {
+                usuario_id: usuarioTemp.data.id,
+                emprestimo_id: emprestimoTemp.data.id,
+                data_devolucao_prevista: "2025-05-01",
+                data_devolucao_real: "2025-05-10"
+            },
+            {headers: { 'Content-Type': 'application/json' }}
+        );
+
+        const res = await axios.delete(
+            `${api}/multas/deletar/${multa.data.id}`, 
+            { headers: { 'Content-Type': 'application/json' }}
+        );
+        expect(res.status).toBe(200); 
+    });
 });
