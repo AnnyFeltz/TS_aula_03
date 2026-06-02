@@ -4,14 +4,14 @@ const api = `http://localhost:${process.env.PORT || 3000}`;
 describe("Multas", () => {
     test('POST /multas/criar cria uma multa', async () => {
         const usuarioTemp = await axios.post(`${api}/usuarios/criar`, {
-            nome: "Usuário de Teste",
+            nome: "Usuário de Teste para Multa 1",
             email: `usuario_${Date.now()}@email.com`,
             senha: "123456",
             tipo: "aluno",
         });
 
         const livroTemp = await axios.post(`${api}/livros/criar`, {
-            titulo: 'Livro de Teste para Multa',
+            titulo: 'Livro de Teste para Multa 1',
             autor: 'Autor de Teste',
             disponivel: true
         });
@@ -57,14 +57,14 @@ describe("Multas", () => {
 
      test('GET /multas/usuario/:usuario_id busca multas por usuário', async () => {
         const usuarioTemp = await axios.post(`${api}/usuarios/criar`, {
-            nome: "Usuário de Teste para Multa",
+            nome: "Usuário de Teste para Multa 2",
             email: `usuario_${Date.now()}@email.com`,
             senha: "123456",
             tipo: "aluno",
         });
 
         const livroTemp = await axios.post(`${api}/livros/criar`, {
-            titulo: 'Livro de Teste para Multa',
+            titulo: 'Livro de Teste para Multa 2',
             autor: 'Autor de Teste',
             disponivel: true
         });
@@ -96,14 +96,14 @@ describe("Multas", () => {
 
     test('GET /multas/emprestimo/:emprestimo_id busca multa por empréstimo', async () => {
         const usuarioTemp = await axios.post(`${api}/usuarios/criar`, {
-            nome: "Usuário de Teste para Multa",
+            nome: "Usuário de Teste para Multa 3",
             email: `usuario_${Date.now()}@email.com`,
             senha: "123456",
             tipo: "aluno",
         });
 
         const livroTemp = await axios.post(`${api}/livros/criar`, {
-            titulo: 'Livro de Teste para Multa',
+            titulo: 'Livro de Teste para Multa 3',
             autor: 'Autor de Teste',
             disponivel: true
         });
@@ -135,14 +135,14 @@ describe("Multas", () => {
 
     test('POST /multas/valor calcula o valor da multa', async () => {
         const usuarioTemp = await axios.post(`${api}/usuarios/criar`, {
-            nome: "Usuário de Teste para Multa",
+            nome: "Usuário de Teste para Multa 1",
             email: `usuario_${Date.now()}@email.com`,
             senha: "123456",
             tipo: "aluno",
         });
         
         const livroTemp = await axios.post(`${api}/livros/criar`, {
-            titulo: 'Livro de Teste para Multa',
+            titulo: 'Livro de Teste para Multa 1',
             autor: 'Autor de Teste',
             disponivel: true
         });
@@ -172,7 +172,7 @@ describe("Multas", () => {
 
     test('PATCH /multas/atualizar/:id atualiza uma multa', async () => {
         const usuarioTemp = await axios.post(`${api}/usuarios/criar`, {
-            nome: "Usuário de Teste para Multa",
+            nome: "Usuário de Teste para Multa 1",
             email: `usuario_${Date.now()}@email.com`,
             senha: "123456",
             tipo: "aluno",
@@ -212,14 +212,14 @@ describe("Multas", () => {
 
     test('PATCH /multas/quitar/:id quita uma multa', async () => {
         const usuarioTemp = await axios.post(`${api}/usuarios/criar`, {
-            nome: "Usuário de Teste para Multa",
+            nome: "Usuário de Teste para Multa 2",
             email: `usuario_${Date.now()}@email.com`,
             senha: "123456",
             tipo: "aluno",
         });
         
         const livroTemp = await axios.post(`${api}/livros/criar`, {
-            titulo: 'Livro de Teste para Multa',
+            titulo: 'Livro de Teste para Multa 2',
             autor: 'Autor de Teste',
             disponivel: true
         });
@@ -253,14 +253,14 @@ describe("Multas", () => {
 
     test('DELETE /multas/deletar/:id deleta uma multa', async () => {
         const usuarioTemp = await axios.post(`${api}/usuarios/criar`, {
-            nome: "Usuário de Teste para Multa",
+            nome: "Usuário de Teste para Multa 3",
             email: `usuario_${Date.now()}@email.com`,
             senha: "123456",
             tipo: "aluno",
         });
         
         const livroTemp = await axios.post(`${api}/livros/criar`, {
-            titulo: 'Livro de Teste para Multa',
+            titulo: 'Livro de Teste para Multa 3',
             autor: 'Autor de Teste',
             disponivel: true
         });
